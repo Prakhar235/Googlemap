@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
+import dagger.android.DaggerActivity;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , View {
 
     private GoogleMap mMap;
@@ -38,8 +40,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        presenter=new Presenter(this);
+        Presentationcomponent presentationcomponent=DaggerPresentationcomponent.create();
+       presenter= presentationcomponent.getPresenter();
+
+
+
+      //  presenter=new Presenter(this);
+        presenter.setView(this);
         presenter.setlocation(locationManager,getApplicationContext());
+
 
 
 

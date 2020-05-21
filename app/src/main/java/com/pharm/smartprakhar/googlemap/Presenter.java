@@ -21,13 +21,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
-import static android.content.Context.LOCATION_SERVICE;
+import javax.inject.Inject;
 
+import dagger.Module;
+import dagger.Provides;
+
+import static android.content.Context.LOCATION_SERVICE;
+@Module
 public class Presenter {
 
   private  View view;
-     Presenter(View view) {
+
+  @Inject
+     Presenter() {
+
+    }
+
+    public void setView(View view)
+    {
         this. view=view;
+
     }
 
     public void setlocation(LocationManager locationManager, final Context context)
