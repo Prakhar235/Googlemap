@@ -26,6 +26,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     LocationManager locationManager;
+
     Presenter presenter;
 
     @Override
@@ -36,8 +37,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         presenter=new Presenter(this);
-        presenter.setlocation();
+        presenter.setlocation(locationManager,getApplicationContext());
 
 
 
@@ -65,116 +67,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void displaylocation() {
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+    public void displaylocation(LatLng latLng,String str) {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        mMap.addMarker(new MarkerOptions().position(latLng).title(str));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-
-            requestPermissions(new String[] { Manifest.permission. ACCESS_FINE_LOCATION},
-                    3);
-            requestPermissions(new String[] { Manifest.permission. ACCESS_COARSE_LOCATION},
-                    4);
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-        {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    double latitude=location.getLatitude();
-                    double longitude=location.getLongitude();
-
-
-
-                    LatLng latLng=new LatLng(latitude,longitude);
-                    Geocoder geocoder=new Geocoder(getApplicationContext());
-                    try {
-                        List<Address>  addressList =   geocoder.getFromLocation(latitude,longitude,1);
-                        String str=addressList.get(0).getLocality()+",";
-                        str+=addressList.get(0).getCountryName();
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(str));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                    } catch (IOException e) {
-
-
-                    }
-
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            });
-
-
-        }
-        else
-        {
-            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        double latitude=location.getLatitude();
-                        double longitude=location.getLongitude();
-
-                        LatLng latLng=new LatLng(latitude,longitude);
-                        Geocoder geocoder=new Geocoder(getApplicationContext());
-                        try {
-                            List<Address>  addressList =   geocoder.getFromLocation(latitude,longitude,1);
-                            String str=addressList.get(0).getLocality()+",";
-                            str+=addressList.get(0).getCountryName();
-                            mMap.addMarker(new MarkerOptions().position(latLng).title(str));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                        } catch (IOException e) {
-
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String s) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String s) {
-
-                    }
-                });
-
-            }
-
-        }
 
 
     }
