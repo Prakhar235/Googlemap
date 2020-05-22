@@ -7,6 +7,8 @@ import dagger.Provides;
 
 public interface Presentationcomponent {
 
+    //Builds up the Presenter by self initaiting the objects through dagger annotion processing
+
     Presenter getPresenter();
 
 

@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Observable;
 
 import dagger.android.DaggerActivity;
 
@@ -28,6 +29,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     LocationManager locationManager;
+
 
     Presenter presenter;
 
@@ -40,12 +42,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //Presenter Component get initantiated throgh dagger
         Presentationcomponent presentationcomponent=DaggerPresentationcomponent.create();
        presenter= presentationcomponent.getPresenter();
 
 
 
-      //  presenter=new Presenter(this);
+
+
         presenter.setView(this);
         presenter.setlocation(locationManager,getApplicationContext());
 
@@ -70,8 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-      //  LatLng sydney = new LatLng(-34, 151);
 
     }
 

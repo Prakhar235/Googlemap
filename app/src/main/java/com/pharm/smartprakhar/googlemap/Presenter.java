@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -25,6 +26,12 @@ import javax.inject.Inject;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.content.Context.LOCATION_SERVICE;
 @Module
@@ -43,7 +50,7 @@ public class Presenter {
 
     }
 
-    public void setlocation(LocationManager locationManager, final Context context)
+    public void setlocation(final LocationManager locationManager, final Context context)
     {
 
 
@@ -76,13 +83,55 @@ public class Presenter {
 
 
 
+
+                //Storing the object in the location repository
                     LatLng latLng=new LatLng(latitude,longitude);
+                    (LocationRepo.getObj()).setLatLng(latLng);
+
+
+
+                   Observable<LatLng> observable=Observable.just((LocationRepo.getObj()).getLatLng());
+
+                   Observer<LatLng> observer=new Observer<LatLng>() {
+                       @Override
+                       public void onSubscribe(@NonNull Disposable d) {
+
+
+
+
+                       }
+
+                       @Override
+                       public void onNext(@NonNull LatLng latLng) {
+                           view.displaylocation(latLng,"Moving");
+
+
+                       }
+
+                       @Override
+                       public void onError(@NonNull Throwable e) {
+
+
+                       }
+
+                       @Override
+                       public void onComplete() {
+
+                       }
+                   };
+
+                   observable.subscribe(observer);
+
+
+
+
+
                     Geocoder geocoder=new Geocoder(context);
                     try {
                         List<Address> addressList =   geocoder.getFromLocation(latitude,longitude,1);
                         String str=addressList.get(0).getLocality()+",";
                         str+=addressList.get(0).getCountryName();
-                        view.displaylocation(latLng,str);
+                      //  view.displaylocation(latLng,str);
                         //  mMap.addMarker(new MarkerOptions().position(latLng).title(str));
                         //   mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -122,12 +171,49 @@ public class Presenter {
                         double longitude=location.getLongitude();
 
                         LatLng latLng=new LatLng(latitude,longitude);
+
+                        (LocationRepo.getObj()).setLatLng(latLng);
+
+
+
+                        Observable<LatLng> observable=Observable.just((LocationRepo.getObj()).getLatLng());
+
+                        Observer<LatLng> observer=new Observer<LatLng>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
+
+
+
+
+                            }
+
+                            @Override
+                            public void onNext(@NonNull LatLng latLng) {
+                                view.displaylocation(latLng,"Moving");
+
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        };
+
+                        observable.subscribe(observer);
+
                         Geocoder geocoder=new Geocoder(context);
                         try {
                             List<Address>  addressList =   geocoder.getFromLocation(latitude,longitude,1);
                             String str=addressList.get(0).getLocality()+",";
                             str+=addressList.get(0).getCountryName();
-                           view.displaylocation(latLng,str);
+
                         } catch (IOException e) {
 
 
